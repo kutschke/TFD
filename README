@@ -1,6 +1,10 @@
 A repo to test the behaviour of TFileDirectory::mkdir with the
 changes introduced in art v3.10
 
+It contains two examples TFD1_module and TFD2_module.
+I think that I understand why the first one works.
+I don't understand why the second one works.
+
 setup mu2e
 git clone https://github.com/kutschke/TFD
 mkdir muse
@@ -12,4 +16,18 @@ art -c TFD/fcl/tfd1.fcl
 Then examine the file tfd1.root.
 It should have two subdirectories, m1 and m2, one for each module instantiation.
 Each of this will have two histograms h1 and foo/h2 .
+The reason for two subdirectories is just to make sure that I am not doing
+something that causes confusion if I instantiate two modules of the same module_type.
+
+To run the second example:
+art -c TFD/fcl/tfd2.fcl
+
+This will make tfd2.root that has the same content as tfd1.root .
+
+The difference between the two is that the first receieves the return value
+of mkdir as an rvalue reference.  The second as a const lvalue reference.
+I don't understand two things in this case:
+  - Why can I call the non-const member function template "make" on tfdir
+  - Does this code leak a temporary?  If not, who is deleting it?  Is there an invisible
+    rvalue reference somewhere?
 

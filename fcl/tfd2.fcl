@@ -1,0 +1,16 @@
+# Run the TFileDirectory test, TFD2
+#
+
+process : TFD
+
+source : { module_type : EmptyEvent  maxEvents : 3 }
+
+services : { TFileService : { fileName : "tfd2.root" } }
+
+physics : {
+  analyzers: { m1: {  module_type : TFD2  }
+               m2: {  module_type : TFD2  }
+              }
+  e1 : [m1, m2 ]
+}
+
