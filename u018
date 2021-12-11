@@ -1,0 +1,82 @@
+
+#
+# use preferred build type, if none requested
+#
+if [ -z "$MUSE_BUILD" ]; then
+    export MUSE_BUILD=prof
+    if [ $MUSE_VERBOSE -gt 0 ]; then 
+        echo "INFO - MUSE_BUILD defaulting to $MUSE_BUILD in $MUSE_ENVSET"
+    fi
+fi
+
+#
+# use preferred compiler, if none requested
+#
+if [ -z "$MUSE_COMPILER_E" ]; then
+    export MUSE_COMPILER_E=e20
+    if [ $MUSE_VERBOSE -gt 0 ]; then 
+        echo "INFO - MUSE_COMPILER_E defaulting to $MUSE_COMPILER_E in $MUSE_ENVSET"
+    fi
+fi
+
+#
+# use preferred python flag, if none requested
+#
+if [ -z "$MUSE_PYTHON" ]; then
+    export MUSE_PYTHON=p399
+    if [ $MUSE_VERBOSE -gt 0 ]; then 
+        echo "INFO - MUSE_PYTHON defaulting to $MUSE_PYTHON in $MUSE_ENVSET"
+    fi
+fi
+
+
+# build tools
+setup cetpkgsupport v1_14_01
+setup -B  cetbuildtools   v8_18_11
+setup -B  valgrind   v3_18_1 
+setup -B  cmake   v3_22_0 
+
+# art 
+# these three lines must be coordinated
+setup -B art_root_io v1_09_00 -q${MUSE_BUILD}:+${MUSE_COMPILER_E}
+export MUSE_ART=s114
+setup -B  gallery   v1_19_00  -q+${MUSE_BUILD}:+${MUSE_COMPILER_E}
+complete -F _art -o filenames -A file mu2e
+
+#
+# geant4
+#
+GFLAGS=+${MUSE_BUILD}:+${MUSE_COMPILER_E}
+if [ -z "$MUSE_G4ST" ]; then
+   GFLAGS=${GFLAGS}:+mt
+fi
+if [ -n "$MUSE_G4VG" ]; then
+   GFLAGS=${GFLAGS}:+vg
+fi
+if [ "$MUSE_G4VIS" == "qt" ]; then
+   GFLAGS=${GFLAGS}:+qt
+fi
+
+setup -B geant4 v4_10_7_p02a -q${GFLAGS}
+
+#
+# everything else
+#
+
+setup -B xerces_c v3_2_3   -q +${MUSE_BUILD}:+${MUSE_COMPILER_E}
+setup -B mu2e_artdaq_core v1_06_09 -q +${MUSE_BUILD}:+${MUSE_COMPILER_E}:+${MUSE_ART}
+setup -B heppdt   v03_04_02 -q +${MUSE_BUILD}:+${MUSE_COMPILER_E}
+setup -B BTrk   v1_02_35  -q +${MUSE_BUILD}:+${MUSE_COMPILER_E}:+${MUSE_PYTHON}
+setup -B KinKal  v00_01_08a  -q +${MUSE_BUILD}:+${MUSE_COMPILER_E}:+${MUSE_PYTHON}
+setup -B cry   v1_7n  -q +${MUSE_BUILD}:+${MUSE_COMPILER_E}
+setup -B gsl v2_7
+setup curl v7_64_1
+setup cryptopp v08_02_00 -q +${MUSE_BUILD}:+${MUSE_COMPILER_E}
+setup -B scons v4_2_0a  -q +${MUSE_PYTHON}
+setup -B gdb v11_1
+setup -B swig
+
+# Local Variables:
+# mode: sh
+# End:
+# vi:syntax=sh

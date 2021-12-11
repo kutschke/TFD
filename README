@@ -1,0 +1,15 @@
+A repo to test the behaviour of TFileDirectory::mkdir with the
+changes introduced in art v3.10
+
+setup mu2e
+git clone https://github.com/kutschke/TFD
+mkdir muse
+cp TFD/u018 muse
+muse setup -1 -q u018
+muse build -j 8
+art -c TFD/fcl/tfd1.fcl
+
+Then examine the file tfd1.root.
+It should have two subdirectories, m1 and m2, one for each module instantiation.
+Each of this will have two histograms h1 and foo/h2 .
+
