@@ -25,9 +25,13 @@ art -c TFD/fcl/tfd2.fcl
 This will make tfd2.root that has the same content as tfd1.root .
 
 The difference between the two is that the first receieves the return value
-of mkdir as an rvalue reference.  The second as a const lvalue reference.
+of mkdir as a non-const rvalue reference,  the second as a const lvalue reference.
 I don't understand two things in this case:
-  - Why can I call the non-const member function template "make" on tfdir
+  - Why am I able to call the non-const member function template "make" on tfdir?
   - Does this code leak a temporary?  If not, who is deleting it?  Is there an invisible
     rvalue reference somewhere?
 
+Bottom line: if TFD2 is legit, I know how to solve our problems.
+
+Finally, if I modify TFD2 to make the tfdir a non-const lvalue reference, the code
+fails to compile, as I expected.
